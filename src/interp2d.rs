@@ -40,7 +40,7 @@
 //! ```
 
 use num_traits::{Num};
-use ndarray::{Axis, ArrayBase, Data, Ix1, Ix2, OwnedRepr};
+use ndarray::{Axis, Array2};
 use std::ops::Mul;
 
 // /// Define the extrapolation behaviour when a point outside of the sample grid should
@@ -59,12 +59,12 @@ use std::ops::Mul;
 ///
 /// * `C`: Coordinate type.
 /// * `Z`: Value type.
-pub struct Interp2D<DZ, C, Z>
-    where DZ: Data<Elem=Z>,
-          Z: Num {
+/// * `AZ`: Array representation of `Z` values.
+pub struct Interp2D<C, Z>
+    where Z: Num {
     x: Vec<C>,
     y: Vec<C>,
-    z: ArrayBase<DZ, Ix2>,
+    z: Array2<Z>,
 }
 
 /// Interpolate over a two dimensional *normalized* grid cell.
@@ -118,10 +118,9 @@ fn interp2d<C, Z>((x, y): (C, C),
     interpolate2d_bilinear(v00, v10, v01, v11, alpha, beta)
 }
 
-impl<DZ, C, Z> Interp2D<DZ, C, Z>
+impl<C, Z> Interp2D<C, Z>
     where C: Num + Copy + Mul<Z, Output=Z> + PartialOrd,
-          Z: Num + Copy + Mul<C, Output=Z>,
-          DZ: Data<Elem=Z> {
+          Z: Num + Copy + Mul<C, Output=Z> {
     /// Create a new interpolation engine.
     ///
     /// Interpolates values which are sampled on a rectangular grid.
@@ -136,7 +135,7 @@ impl<DZ, C, Z> Interp2D<DZ, C, Z>
     /// * dimensions of x/y axis and z-values don't match.
     /// * one axis is empty.
     /// * `x` and `y` values are not monotonic.
-    pub fn new(x: Vec<C>, y: Vec<C>, z: ArrayBase<DZ, Ix2>) -> Self {
+    pub fn new(x: Vec<C>, y: Vec<C>, z: Array2<Z>) -> Self {
         assert_eq!(z.len_of(Axis(0)), x.len(), "x-axis length mismatch.");
         assert_eq!(z.len_of(Axis(1)), y.len(), "y-axis length mismatch.");
         assert!(!x.is_empty());
@@ -175,7 +174,7 @@ impl<DZ, C, Z> Interp2D<DZ, C, Z>
         // Find closest grid points.
         let find_closest_neighbours_indices = |v: &Vec<C>, x: C| -> (usize, usize) {
             let idx = v.iter().copied().enumerate()
-                .take_while(|&(i, a)| a <= x)
+                .take_while(|&(_i, a)| a <= x)
                 .last()
                 .map(|(i, _)| i)
                 .unwrap_or(v.len() - 1);
@@ -230,20 +229,17 @@ impl<DZ, C, Z> Interp2D<DZ, C, Z>
     }
 
     /// Get the raw z values.
-    pub fn z(&self) -> &ArrayBase<DZ, Ix2> {
+    pub fn z(&self) -> &Array2<Z> {
         &self.z
     }
-}
 
-impl<C, Z> Interp2D<OwnedRepr<Z>, C, Z>
-    where C: Num + Copy + Mul<Z, Output=Z> + PartialOrd,
-          Z: Num + Copy + Mul<C, Output=Z> {
     /// Swap the input variables.
     pub fn swap_variables(self) -> Self {
         let Self { x, y, z } = self;
         Self::new(y, x, z.t().to_owned())
     }
 }
+
 
 // impl<C, Z> Interp2D<ViewRepr<Z>, C, Z>
 //     where C: Num + Copy + Mul<Z, Output=Z> + PartialOrd,

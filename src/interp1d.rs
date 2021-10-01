@@ -32,7 +32,7 @@
 //! assert!((interp.eval_no_extrapolation(1.0).unwrap() - 1.0).abs() < 1e-6);
 //! ```
 
-use num_traits::{Num, NumOps, Float};
+use num_traits::Num;
 use std::ops::Mul;
 
 ///
@@ -57,9 +57,9 @@ fn interpolate1d<C, Z>(x0: Z, x1: Z, alpha: C) -> Z
 
 #[test]
 fn test_interpolate1d() {
-    assert!((interpolate1d(1., 2., 0.) - 1.).abs() < 1e-6);
-    assert!((interpolate1d(1., 2., 1.) - 2.).abs() < 1e-6);
-    assert!((interpolate1d(1., 2., 0.5) - 1.5).abs() < 1e-6);
+    assert!((interpolate1d(1.0f64, 2., 0.) - 1.).abs() < 1e-6);
+    assert!((interpolate1d(1.0f64, 2., 1.) - 2.).abs() < 1e-6);
+    assert!((interpolate1d(1.0f64, 2., 0.5) - 1.5).abs() < 1e-6);
 }
 
 /// Find the value of `f(x)`
@@ -127,7 +127,7 @@ impl<C, Z> Interp1D<C, Z>
         // Find closest grid points.
         let find_closest_neighbours_indices = |v: &Vec<C>, x: C| -> (usize, usize) {
             let idx = v.iter().copied().enumerate()
-                .take_while(|&(i, a)| a <= x)
+                .take_while(|&(_i, a)| a <= x)
                 .last()
                 .map(|(i, _)| i)
                 .unwrap_or(v.len() - 1);
@@ -182,7 +182,7 @@ impl<C, Z> Interp1D<C, Z>
 #[test]
 fn test_interp1d() {
 
-    let xs = vec![0.0, 1.0, 2.0];
+    let xs = vec![0.0f64, 1.0, 2.0];
     let zs = vec![0.0, 1.0, 0.0];
 
     let interp = Interp1D::new(xs, zs);
