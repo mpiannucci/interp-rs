@@ -60,6 +60,7 @@ use std::ops::Mul;
 /// * `C`: Coordinate type.
 /// * `Z`: Value type.
 /// * `AZ`: Array representation of `Z` values.
+#[derive(Clone)]
 pub struct Interp2D<C, Z>
     where Z: Num {
     x: Vec<C>,
