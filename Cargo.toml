@@ -1,0 +1,16 @@
+[package]
+name = "interp"
+version = "0.0.0"
+authors = ["Thomas Kramer <code@tkramer.ch>"]
+edition = "2018"
+license = "AGPLv3"
+description = "Interpolation of one and two dimensional arrays."
+keywords = ["interpolation"]
+readme = "README.md"
+homepage = "https://codeberg.org/libreda/interp"
+repository = "https://codeberg.org/libreda/interp"
+
+[dependencies]
+ndarray = "0.14"
+num-traits = "0.2"
+
