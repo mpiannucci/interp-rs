@@ -3,7 +3,7 @@
 `interp` provides functions for interpolation of one dimensional and two dimensional array.
 
 # Example
-```
+```rust
 use interp::interp2d::Interp2D;
 
 // Create 2D array of values.
