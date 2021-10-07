@@ -34,6 +34,7 @@
 
 use num_traits::Num;
 use std::ops::Mul;
+use std::cmp::Ordering;
 
 ///
 /// * `C`: Coordinate type.
@@ -126,11 +127,16 @@ impl<C, Z> Interp1D<C, Z>
 
         // Find closest grid points.
         let find_closest_neighbours_indices = |v: &Vec<C>, x: C| -> (usize, usize) {
-            let idx = v.iter().copied().enumerate()
-                .take_while(|&(_i, a)| a <= x)
-                .last()
-                .map(|(i, _)| i)
-                .unwrap_or(v.len() - 1);
+            let idx = match v.binary_search_by(|a| {
+                if *a < x {
+                    Ordering::Less
+                } else {
+                    Ordering::Greater
+                }
+            }) {
+                Ok(i) => i,
+                Err(i) => i,
+            };
             let (idx1, idx2) = if idx == v.len() - 1 {
                 (idx - 1, idx)
             } else {
