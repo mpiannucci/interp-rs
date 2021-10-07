@@ -42,6 +42,7 @@
 use num_traits::{Num};
 use ndarray::{Axis, Array2};
 use std::ops::Mul;
+use crate::find_closest_neighbours_indices;
 
 // /// Define the extrapolation behaviour when a point outside of the sample grid should
 // /// be evaluated.
@@ -173,19 +174,6 @@ impl<C, Z> Interp2D<C, Z>
     pub fn eval(&self, (x, y): (C, C)) -> Z {
 
         // Find closest grid points.
-        let find_closest_neighbours_indices = |v: &Vec<C>, x: C| -> (usize, usize) {
-            let idx = v.iter().copied().enumerate()
-                .take_while(|&(_i, a)| a <= x)
-                .last()
-                .map(|(i, _)| i)
-                .unwrap_or(v.len() - 1);
-            let (idx1, idx2) = if idx == v.len() - 1 {
-                (idx - 1, idx)
-            } else {
-                (idx, idx + 1)
-            };
-            (idx1, idx2)
-        };
         let (x0, x1) = find_closest_neighbours_indices(&self.x, x);
         let (y0, y1) = find_closest_neighbours_indices(&self.y, y);
 

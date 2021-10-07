@@ -35,6 +35,7 @@
 use num_traits::Num;
 use std::ops::Mul;
 use std::cmp::Ordering;
+use crate::find_closest_neighbours_indices;
 
 ///
 /// * `C`: Coordinate type.
@@ -126,24 +127,7 @@ impl<C, Z> Interp1D<C, Z>
     pub fn eval(&self, x: C) -> Z {
 
         // Find closest grid points.
-        let find_closest_neighbours_indices = |v: &Vec<C>, x: C| -> (usize, usize) {
-            let idx = match v.binary_search_by(|a| {
-                if *a < x {
-                    Ordering::Less
-                } else {
-                    Ordering::Greater
-                }
-            }) {
-                Ok(i) => i,
-                Err(i) => i,
-            };
-            let (idx1, idx2) = if idx == v.len() - 1 {
-                (idx - 1, idx)
-            } else {
-                (idx, idx + 1)
-            };
-            (idx1, idx2)
-        };
+
         let (x0, x1) = find_closest_neighbours_indices(&self.x, x);
 
         interp1d(x,
