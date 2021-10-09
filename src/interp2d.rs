@@ -56,14 +56,6 @@ use crate::find_closest_neighbours_indices;
 //     Linear,
 // }
 
-
-fn sum_general<S>(x: ArrayBase<S, Ix2>) -> f64
-    where
-        S: Data<Elem=f64>,
-{
-    x.sum()
-}
-
 /// Two dimensional bilinear interpolator for data on an irregular grid.
 ///
 /// * `C`: Coordinate type.
