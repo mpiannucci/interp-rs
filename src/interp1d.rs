@@ -34,7 +34,6 @@
 
 use num_traits::Num;
 use std::ops::Mul;
-use std::cmp::Ordering;
 use crate::find_closest_neighbours_indices;
 
 ///

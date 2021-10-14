@@ -40,7 +40,7 @@
 //! ```
 
 use num_traits::{Num};
-use ndarray::{Axis, ArrayBase, Data, Ix2, ViewRepr, OwnedRepr};
+use ndarray::{Axis, ArrayBase, Data, Ix2, OwnedRepr};
 use std::ops::Mul;
 use crate::find_closest_neighbours_indices;
 
