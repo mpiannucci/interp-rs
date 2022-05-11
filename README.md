@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2022 Thomas Kramer
+
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # 1D & 2D Interpolation
 
 `interp` provides functions for interpolation of one dimensional and two dimensional array.
